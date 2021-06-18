@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./public/",
+    "noImplicitAny": true,
+    "sourceMap": true,
+    "module": "es6",
+    "target": "es5",
+    "strict": false
+  },
+  "include": ["./src/**/*"]
+}
