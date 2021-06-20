@@ -1,7 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-const config = {
+module.exports = {
   entry: './src/index.ts',
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -16,6 +16,10 @@ const config = {
     ],
   },
   resolve: {
+    // https://webpack.js.org/configuration/resolve/#resolve-alias
+    alias: {
+      '@web': path.resolve(__dirname, './src/'),
+    },
     extensions: ['.ts', '.js', '.json'],
   },
   plugins: [
@@ -25,5 +29,3 @@ const config = {
     }),
   ],
 }
-
-module.exports = config

@@ -5,7 +5,12 @@
     "sourceMap": true,
     "module": "es6",
     "target": "es5",
-    "strict": false
+    "strict": false,
+    "baseUrl": ".", // https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping
+    "paths": {
+      // paths are resolved relative to baseUrl
+      "@web/*": ["./src/*"]
+    }
   },
   "include": ["./src/**/*"]
 }
