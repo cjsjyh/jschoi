@@ -16,41 +16,40 @@ interface ExtractedFunctionType {
   func: () => any
 }
 
+// Right now, in cases such as
+// <div>
+//    <p> test </p>
+//    test2
+// </div>
+// which innerHTML comes after children tag are not handled.
+// wrap it in a HTML tag or place before children tag
+
 // ------------------
 // [MASTER FUNCTION]
 // ------------------
-export const JSXstrToHTML = (parent: HTMLElement, JSXstr: string) => {
+export const JSXstrToHTML = ($parent: HTMLElement, JSXstr: string) => {
   const processedJSXstr = splitStrByArrowBracket(JSXstr)
   const { JSXobj } = JSXstrToJSXobj(processedJSXstr)
-  return JSXobjToHTML(parent, JSXobj)
+  return JSXobjToHTML($parent, JSXobj)
 }
 
-export const JSXobjToHTML = (parent: HTMLElement, JSXobj: JsxObjType) => {
-  const $element = document.createElement(JSXobj.type)
-  JSXobj.click && ($element.click = JSXobj.click)
-  JSXobj.innerHTML && ($element.innerHTML = JSXobj.innerHTML)
-
-  for (const propName in JSXobj.props) {
-    $element.setAttribute(propName, JSXobj.props[propName])
-  }
-  if ('children' in JSXobj) {
-    JSXobj.children.forEach((childObj) => JSXobjToHTML($element, childObj))
-  }
-  parent.appendChild($element)
-  return $element
-}
-
-// Remove whitespace (space + newline)
-const stripString = (str: string) => str?.replace(/^\s+|\s+$/g, '')
-const isClosingTag = (str: string) => str?.[0] === '/'
-const removeQutoes = (str: string) => str?.replace(/"/g, '').replace(/'/g, '')
+export const isClosingTag = (str: string): boolean => str?.[0] === '/'
+// export const multipleSpaceToSingleSpace = (str: string): string =>
+//   str?.replace(/\s\s+/g, ' ')
+export const removeQuotes = (str: string): string =>
+  str?.replace(/"/g, '').replace(/'/g, '')
+//remove tab, newline, form feed > replace multiple space to one
+export const cleanUpText = (str: string): string =>
+  str.replace(/\f|\n|\r|\t/g, '').replace(/\s\s+/g, ' ')
 
 // Split JSX string by tags and remove whitespace
 export const splitStrByArrowBracket = (JSXstr: string): string[] => {
   return JSXstr.split('<').reduce((acc, str) => {
-    const strStripped = stripString(str)
-    if (strStripped) return acc
-    return acc.concat(strStripped)
+    const trimmedStr = str.trim()
+    if (trimmedStr) {
+      acc.push(trimmedStr)
+    }
+    return acc
   }, [])
 }
 
@@ -59,16 +58,17 @@ export const extractFunction = (
   funcName: string,
 ): ExtractedFunctionType => {
   const startIndex = srcStr.indexOf(funcName)
-  if (startIndex === -1) return null
+  if (startIndex === -1) return { func: null, strWithoutFunc: srcStr }
 
   const endIndex = srcStr.lastIndexOf('}')
   const funcStr = srcStr.slice(startIndex, endIndex)
   const funcStartIndex = funcStr.indexOf('{')
 
   return {
-    strWithoutFunc:
+    strWithoutFunc: cleanUpText(
       srcStr.slice(0, startIndex - 1) +
-      srcStr.slice(endIndex + 1, srcStr.length),
+        srcStr.slice(endIndex + 1, srcStr.length),
+    ),
     func: eval(funcStr.slice(funcStartIndex + 1, endIndex)),
   }
 }
@@ -90,7 +90,7 @@ export const JSXstrToJSXobj = (
     // loop until MY closing tag appears
     while (true) {
       // children element exists
-      if (newJSXobjWrapper.JSXobj != null) {
+      if (newJSXobjWrapper.JSXobj !== null) {
         newJSXobj.children.push(newJSXobjWrapper.JSXobj)
         newJSXobjWrapper = JSXstrToJSXobj(
           htmlStrArr,
@@ -104,22 +104,37 @@ export const JSXstrToJSXobj = (
 
   // Handling onClick to change to a function
   const { func, strWithoutFunc } = extractFunction(currentLine, 'onClick')
-  newJSXobj.click = func
+  func && (newJSXobj.click = func)
 
   // [strWithoutFunc current status]: div className="test"> hello world
   const [propsStr, innerHTML] = strWithoutFunc.split('>')
-  newJSXobj.innerHTML = innerHTML
+  innerHTML && (newJSXobj.innerHTML = innerHTML.trim())
 
   // Extract type and other properties
   const [type, ...propsStrSplit] = propsStr.split(' ')
   newJSXobj.type = type
-  propsStrSplit.forEach((prop, index) => {
+  propsStrSplit.forEach((prop) => {
     const [propName, propValue] = prop.split('=')
-    newJSXobj.props[propName] = removeQutoes(propValue)
+    propName && (newJSXobj.props[propName] = removeQuotes(propValue))
   })
 
   return {
     nextCheckIndex: newJSXobjWrapper.nextCheckIndex,
     JSXobj: newJSXobj,
   }
+}
+
+export const JSXobjToHTML = ($parent: HTMLElement, JSXobj: JsxObjType) => {
+  const $element = document.createElement(JSXobj.type)
+  JSXobj.click && ($element.click = JSXobj.click)
+  JSXobj.innerHTML && ($element.innerHTML = JSXobj.innerHTML)
+
+  for (const propName in JSXobj.props) {
+    $element.setAttribute(propName, JSXobj.props[propName])
+  }
+  if ('children' in JSXobj) {
+    JSXobj.children.forEach((childObj) => JSXobjToHTML($element, childObj))
+  }
+  $parent.appendChild($element)
+  return $element
 }
