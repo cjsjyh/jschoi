@@ -1,10 +1,4 @@
-import {
-  removeQuotes,
-  splitStrByArrowBracket,
-  extractFunction,
-  cleanUpText,
-  JSXstrToJSXobj,
-} from './jsxParser'
+import { removeQuotes, splitStrByArrowBracket, extractFunction, cleanUpText, JSXstrToJSXobj } from './JSXParser'
 
 const removeQuotesCases = [
   { arg: `"className1"`, result: `className1` },
@@ -28,14 +22,7 @@ const splitStrByArrowBracketCases = [
             <p className="child">test2</p>
         </div>
     `,
-    result: [
-      `div className="header">`,
-      `p>test`,
-      `/p>`,
-      `p className="child">test2`,
-      `/p>`,
-      `/div>`,
-    ],
+    result: [`div className="header">`, `p>test`, `/p>`, `p className="child">test2`, `/p>`, `/div>`],
   },
   {
     arg: `
@@ -45,14 +32,7 @@ const splitStrByArrowBracketCases = [
             </p>
         </div>
     `,
-    result: [
-      `div className="header">`,
-      `p>test`,
-      `a href="www.naver.com">go to link`,
-      `/a>`,
-      `/p>`,
-      `/div>`,
-    ],
+    result: [`div className="header">`, `p>test`, `a href="www.naver.com">go to link`, `/a>`, `/p>`, `/div>`],
   },
 ]
 const extractFunctionCases = [
@@ -88,20 +68,14 @@ describe('Utility Functions', () => {
   test.each(removeQuotesCases)('removeQuotes', ({ arg, result }) => {
     expect(removeQuotes(arg)).toBe(result)
   })
-  test.each(splitStrByArrowBracketCases)(
-    'splitStrByArrowBracket',
-    ({ arg, result }) => {
-      expect(splitStrByArrowBracket(arg)).toEqual(result)
-    },
-  )
-  test.each(extractFunctionCases)(
-    'extractFunction',
-    ({ arg, resultFunc, resultStr }) => {
-      const { func, strWithoutFunc } = extractFunction(arg, 'onClick')
-      expect(JSON.stringify(func)).toEqual(JSON.stringify(resultFunc))
-      expect(strWithoutFunc).toEqual(cleanUpText(resultStr))
-    },
-  )
+  test.each(splitStrByArrowBracketCases)('splitStrByArrowBracket', ({ arg, result }) => {
+    expect(splitStrByArrowBracket(arg)).toEqual(result)
+  })
+  test.each(extractFunctionCases)('extractFunction', ({ arg, resultFunc, resultStr }) => {
+    const { func, strWithoutFunc } = extractFunction(arg, 'onClick')
+    expect(JSON.stringify(func)).toEqual(JSON.stringify(resultFunc))
+    expect(strWithoutFunc).toEqual(cleanUpText(resultStr))
+  })
 })
 
 const JSXstrings = [
@@ -158,8 +132,7 @@ const JSXstrings = [
     },
   },
   {
-    arg: `<div className="class1" onClick={${() =>
-      console.log(1)}}>inner</div>`,
+    arg: `<div className="class1" onClick={${() => console.log(1)}}>inner</div>`,
     result: {
       type: 'div',
       props: { className: 'class1' },

@@ -1,1 +1,0 @@
-export { JSXstrToHTML } from './jsxParser'

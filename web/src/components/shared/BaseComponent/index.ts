@@ -1,5 +1,5 @@
 import { ComponentProps } from '@web/components/shared/types'
-import { JSXstrToHTML } from '@web/util/jsxParser'
+import { JSXstrToHTML } from '@web/util/JSXParser'
 
 export default class BaseComponent {
   $parent: HTMLElement
