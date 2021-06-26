@@ -11,6 +11,8 @@
   "author": "Junsoo Choi",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.14.7",
+    "@babel/preset-typescript": "^7.14.5",
     "html-webpack-plugin": "^5.3.1",
     "jest": "^27.0.4",
     "source-map-loader": "^3.0.0",
@@ -18,8 +20,8 @@
     "tslint": "^6.1.3",
     "tslint-loader": "^3.5.4",
     "typescript": "^4.3.2",
-    "webpack-cli": "^4.7.2",
     "webpack": "^5.39.1",
+    "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {

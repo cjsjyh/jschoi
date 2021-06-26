@@ -5,6 +5,7 @@
     "sourceMap": true,
     "module": "es6",
     "target": "es5",
+    "moduleResolution": "node",
     "strict": false,
     "baseUrl": ".", // https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping
     "paths": {
