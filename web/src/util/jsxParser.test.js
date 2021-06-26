@@ -114,6 +114,32 @@ const JSXstrings = [
     },
   },
   {
+    arg: `<div><p>line1</p><br><p></p></div>`,
+    result: {
+      type: 'div',
+      props: {},
+      children: [
+        {
+          type: 'p',
+          props: {},
+          innerHTML: 'line1',
+          children: [],
+        },
+        {
+          type: 'br',
+          props: {},
+          children: [],
+        },
+        {
+          type: 'p',
+          props: {},
+          innerHTML: 'line1',
+          children: [],
+        },
+      ],
+    },
+  },
+  {
     arg: `<p>test</p>`,
     result: {
       type: 'p',

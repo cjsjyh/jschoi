@@ -34,8 +34,6 @@ export const JSXstrToHTML = ($parent: HTMLElement, JSXstr: string) => {
 }
 
 export const isClosingTag = (str: string): boolean => str?.[0] === '/'
-// export const multipleSpaceToSingleSpace = (str: string): string =>
-//   str?.replace(/\s\s+/g, ' ')
 export const removeQuotes = (str: string): string =>
   str?.replace(/"/g, '').replace(/'/g, '')
 //remove tab, newline, form feed > replace multiple space to one
