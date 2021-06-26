@@ -10,6 +10,15 @@ module.exports = {
   module: {
     rules: [
       { test: /\.css$/, use: 'css-loader' },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader', // creates style nodes from JS strings
+          'css-loader', // translates CSS into CommonJS
+          'sass-loader', // compiles Sass to CSS, using Node Sass by default
+        ],
+        exclude: /node_modules/,
+      },
       { test: /\.ts$/, use: 'ts-loader' },
       { enforce: 'pre', test: /\.js$/, loader: 'source-map-loader' },
       { enforce: 'pre', test: /\.ts$/, loader: 'tslint-loader' },

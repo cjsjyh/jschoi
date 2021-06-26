@@ -1,4 +1,5 @@
 import Post from '@web/components/Post'
+import '@web/assets/scss/global.scss'
 // index.js
 
 function component() {

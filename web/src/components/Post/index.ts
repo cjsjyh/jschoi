@@ -1,5 +1,6 @@
 import markdownBinder from '@web/util/markdownBinder'
 import { JSXstrToHTML } from '@web/util/jsxParser'
+import './post.scss'
 
 const data = {
   title: 'this is my title',
@@ -66,8 +67,8 @@ export default class Post {
   }
 
   render = () => `
-    <div>
-      <p>${data.title}</p>
+    <div class="post-body">
+      <p class="title">${data.title}</p>
       <p>${data.content}</p>
       <p>${data.content}</p>
       <div id=${MARKDOWN_ID}></div>
