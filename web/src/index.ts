@@ -1,6 +1,10 @@
-import Post from '@web/components/Post'
+import dayjs from 'dayjs'
+import 'dayjs/locale/ko'
 import '@web/assets/scss/global.scss'
-// index.js
+
+import Post from '@web/components/Post'
+
+dayjs.locale('ko')
 
 function component() {
   var $element = document.createElement('div')

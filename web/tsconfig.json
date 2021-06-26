@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./public/",
+    "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
     "sourceMap": true,
     "module": "es6",
