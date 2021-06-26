@@ -130,9 +130,8 @@ export const JSXobjToHTML = ($parent: HTMLElement, JSXobj: JsxObjType) => {
   for (const propName in JSXobj.props) {
     $element.setAttribute(propName, JSXobj.props[propName])
   }
-  if ('children' in JSXobj) {
-    JSXobj.children.forEach((childObj) => JSXobjToHTML($element, childObj))
-  }
+  JSXobj.children.forEach((childObj) => JSXobjToHTML($element, childObj))
+
   $parent.appendChild($element)
   return $element
 }
