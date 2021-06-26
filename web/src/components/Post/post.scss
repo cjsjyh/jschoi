@@ -1,5 +1,19 @@
-.post-body {
+@import 'assets/scss/colors.scss';
+
+#post-body {
+  p {
+    margin: 0;
+  }
   .title {
-    color: blue;
+    font-size: 2rem;
+  }
+  .subtitle {
+    display: flex;
+    justify-content: space-between;
+    color: $weak-grey;
+    margin-top: 0.5rem;
+  }
+  .content {
+    margin: 1rem 0 1rem 0;
   }
 }

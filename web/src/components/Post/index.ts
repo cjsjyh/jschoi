@@ -1,5 +1,10 @@
+import dayjs from 'dayjs'
 import markdownBinder from '@web/util/markdownBinder'
-import { JSXstrToHTML } from '@web/util/jsxParser'
+import { ComponentProps } from '@web/components/shared/types'
+
+import BaseComponent from '@web/components/shared/BaseComponent'
+import PostList from './PostList'
+
 import './post.scss'
 
 const data = {
@@ -8,6 +13,7 @@ const data = {
   createdAt: new Date(),
 }
 
+const ROOT_ID = 'post-body'
 const MARKDOWN_ID = 'markdown-content'
 
 const dummyMd = `
@@ -55,23 +61,29 @@ Reference:
 
 `
 
-interface Props {
-  $parent: HTMLElement
-}
-
-export default class Post {
-  constructor({ $parent }: Props) {
-    console.log('constructor')
-    const $element = JSXstrToHTML($parent, this.render())
-    markdownBinder($element, MARKDOWN_ID, dummyMd)
+export default class Post extends BaseComponent {
+  constructor(props: ComponentProps) {
+    super(props)
+    this.render(this.getJSXstr(), ROOT_ID)
+    if (!this.isReturnStr) {
+      markdownBinder(this.$element, MARKDOWN_ID, dummyMd)
+    }
   }
 
-  render = () => `
-    <div class="post-body">
-      <p class="title">${data.title}</p>
-      <p>${data.content}</p>
-      <p>${data.content}</p>
-      <div id=${MARKDOWN_ID}></div>
-    </div>
-  `
+  getJSXstr() {
+    const postList = new PostList({ isReturnStr: true })
+    return `
+      <div id=${ROOT_ID}>
+        <p class="title">${data.title}</p>
+        <div class="subtitle">
+          <p>Junsoo Choi</p>
+          <p>${dayjs(data.createdAt).format('YYYY년 MM월 DD일')}</p>
+        </div>
+        <div class="content">
+          <span id=${MARKDOWN_ID}></div>
+        </div>
+        ${postList.JSXstr}
+      </div>
+    `
+  }
 }

@@ -27,18 +27,20 @@ interface ExtractedFunctionType {
 // ------------------
 // [MASTER FUNCTION]
 // ------------------
-export const JSXstrToHTML = ($parent: HTMLElement, JSXstr: string) => {
+export const JSXstrToHTML = ($parent: HTMLElement, JSXstr: string, selector) => {
+  const $duplicateElements = $parent.querySelectorAll(selector)
+  if ($duplicateElements.length !== 0) {
+    $duplicateElements.forEach(($duplicateElement) => $parent.removeChild($duplicateElement))
+  }
   const processedJSXstr = splitStrByArrowBracket(JSXstr)
   const { JSXobj } = JSXstrToJSXobj(processedJSXstr)
   return JSXobjToHTML($parent, JSXobj)
 }
 
 export const isClosingTag = (str: string): boolean => str?.[0] === '/'
-export const removeQuotes = (str: string): string =>
-  str?.replace(/"/g, '').replace(/'/g, '')
+export const removeQuotes = (str: string): string => str?.replace(/"/g, '').replace(/'/g, '')
 //remove tab, newline, form feed > replace multiple space to one
-export const cleanUpText = (str: string): string =>
-  str.replace(/\f|\n|\r|\t/g, '').replace(/\s\s+/g, ' ')
+export const cleanUpText = (str: string): string => str.replace(/\f|\n|\r|\t/g, '').replace(/\s\s+/g, ' ')
 
 // Split JSX string by tags and remove whitespace
 export const splitStrByArrowBracket = (JSXstr: string): string[] => {
@@ -51,10 +53,7 @@ export const splitStrByArrowBracket = (JSXstr: string): string[] => {
   }, [])
 }
 
-export const extractFunction = (
-  srcStr: string,
-  funcName: string,
-): ExtractedFunctionType => {
+export const extractFunction = (srcStr: string, funcName: string): ExtractedFunctionType => {
   const startIndex = srcStr.indexOf(funcName)
   if (startIndex === -1) return { func: null, strWithoutFunc: srcStr }
 
@@ -63,18 +62,12 @@ export const extractFunction = (
   const funcStartIndex = funcStr.indexOf('{')
 
   return {
-    strWithoutFunc: cleanUpText(
-      srcStr.slice(0, startIndex - 1) +
-        srcStr.slice(endIndex + 1, srcStr.length),
-    ),
+    strWithoutFunc: cleanUpText(srcStr.slice(0, startIndex - 1) + srcStr.slice(endIndex + 1, srcStr.length)),
     func: eval(funcStr.slice(funcStartIndex + 1, endIndex)),
   }
 }
 
-export const JSXstrToJSXobj = (
-  htmlStrArr: string[],
-  checkIndex = 0,
-): JsxObjWrapperType => {
+export const JSXstrToJSXobj = (htmlStrArr: string[], checkIndex = 0): JsxObjWrapperType => {
   const newJSXobj: JsxObjType = { type: '', children: [], props: {} }
   const currentLine = htmlStrArr[checkIndex]
   let newJSXobjWrapper
@@ -90,10 +83,7 @@ export const JSXstrToJSXobj = (
       // children element exists
       if (newJSXobjWrapper.JSXobj !== null) {
         newJSXobj.children.push(newJSXobjWrapper.JSXobj)
-        newJSXobjWrapper = JSXstrToJSXobj(
-          htmlStrArr,
-          newJSXobjWrapper.nextCheckIndex,
-        )
+        newJSXobjWrapper = JSXstrToJSXobj(htmlStrArr, newJSXobjWrapper.nextCheckIndex)
       }
       // closing tag immediately returns without JSXobj
       else break
