@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import markdownBinder from '@web/util/markdownBinder'
-import { ComponentProps } from '@web/components/shared/types'
+import { ComponentProps } from '@web/types'
 
 import BaseComponent from '@web/components/shared/BaseComponent'
 import PostList from './PostList'
@@ -64,6 +64,9 @@ Reference:
 export default class Post extends BaseComponent {
   constructor(props: ComponentProps) {
     super(props)
+
+    console.log(props)
+
     this.render(this.getJSXstr(), ROOT_ID)
     if (!this.isReturnStr) {
       markdownBinder(this.$element, MARKDOWN_ID, dummyMd)

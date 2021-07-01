@@ -1,4 +1,4 @@
-import { ComponentProps } from '@web/components/shared/types'
+import { ComponentProps } from '@web/types'
 
 import BaseComponent from '@web/components/shared/BaseComponent'
 

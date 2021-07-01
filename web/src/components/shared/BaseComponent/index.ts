@@ -1,4 +1,4 @@
-import { ComponentProps } from '@web/components/shared/types'
+import { ComponentProps } from '@web/types'
 import { JSXstrToHTML } from '@web/util/JSXParser'
 
 export default class BaseComponent {
