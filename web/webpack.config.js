@@ -39,6 +39,10 @@ module.exports = {
     },
     extensions: ['.ts', '.js', '.json'],
   },
+  devServer: {
+    port: 3000,
+    historyApiFallback: true,
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'src/index.html',

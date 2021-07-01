@@ -1,0 +1,1 @@
+export { renderComponentByPath } from './router'
