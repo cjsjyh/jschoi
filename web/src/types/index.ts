@@ -12,5 +12,6 @@ export interface RouteType {
 }
 
 export interface FoundComponentType extends RouteType {
+  isMatch: boolean
   params?: { [key: string]: string }
 }

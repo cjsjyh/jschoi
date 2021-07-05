@@ -1,36 +1,68 @@
-import { FoundComponentType } from '@web/types'
+import { FoundComponentType, RouteType } from '@web/types'
 
-const isParam = (str) => str[0] == '{' && str[str.length - 1] == '}'
-const extractParam = (str) => str.slice(1, str.length)
+interface PathMatch {
+  isMatch: boolean
+  params?: { [key: string]: string }
+}
 
-const compareAndExtractParamFromPath = (pattern, path, result) => {
-  const componentPath = pattern.split('/')
-  const browserPath = path.split('/')
-  if (componentPath.length !== browserPath.length) {
-    return false
-  }
+const NOT_FOUND_PATH = '/'
+const isParam = (str: string): boolean => str[0] == '{' && str[str.length - 1] == '}'
+const extractParam = (str: string): string => str.slice(1, str.length - 1)
+const splitAndCleanUp = (str: string): string[] =>
+  str
+    .trim()
+    .split('/')
+    .filter((s) => s)
 
-  result.params = {}
-  const isMatch = componentPath.every((path, index) => {
-    if (path !== browserPath[index]) {
+export const isPathSameWithParam = (componentPathArr: string[], browserPathArr: string[]): PathMatch => {
+  const params = {}
+  const isMatch = componentPathArr.every((path, index) => {
+    if (path !== browserPathArr[index]) {
       if (!isParam(path)) {
         return false
       }
-      result.params[extractParam(path)] = browserPath[index]
+      params[extractParam(path)] = browserPathArr[index]
     }
     return true
   })
-  return isMatch
+  return { isMatch, params }
 }
 
-export const matchPath = (routes, path): FoundComponentType => {
+const isPathExactlySame = (componentPathArr: string[], browserPathArr: string[]): PathMatch => {
+  const isMatch = componentPathArr.every((path, index) => {
+    if (path !== browserPathArr[index]) {
+      return false
+    }
+    return true
+  })
+  return { isMatch }
+}
+
+export const matchPath = (routes: RouteType[], browserPath: string): FoundComponentType => {
   let result
   const isRouteMatched = routes.some((route) => {
-    result = { ...route }
-    return compareAndExtractParamFromPath(route.path, path, result)
+    const componentPathArr = splitAndCleanUp(route.path)
+    const browserPathArr = splitAndCleanUp(browserPath)
+    if (componentPathArr.length !== browserPathArr.length) {
+      return false
+    }
+
+    const { isMatch } = isPathExactlySame(componentPathArr, browserPathArr)
+    if (isMatch) {
+      result = route
+      return true
+    } else {
+      const { isMatch, params } = isPathSameWithParam(componentPathArr, browserPathArr)
+      if (isMatch) {
+        result = { ...route, params, isMatch }
+        return true
+      }
+    }
+    return false
   })
   if (isRouteMatched) {
-    return result
+    return { isMatch: true, ...result }
   }
-  return routes.find((route) => route.path === '/')
+  const notFoundRoute = routes.find((route) => route.path === NOT_FOUND_PATH)
+  return { isMatch: false, ...notFoundRoute }
 }
