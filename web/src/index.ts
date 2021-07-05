@@ -6,5 +6,4 @@ import { renderComponentByPath } from '@web/util/router'
 
 dayjs.locale('ko')
 
-console.log('index')
 renderComponentByPath(location.pathname)

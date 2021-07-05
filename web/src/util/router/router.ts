@@ -20,5 +20,3 @@ window.addEventListener('popState', () => {
   const path = location.pathname
   renderComponentByPath(path)
 })
-
-console.log('router')

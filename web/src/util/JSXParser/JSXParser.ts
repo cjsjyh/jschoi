@@ -101,7 +101,6 @@ export const JSXstrToJSXobj = (htmlStrArr: string[], checkIndex = 0): JsxObjWrap
       else break
     }
   }
-  console.log(currentLine)
 
   // Handling onClick to change to a function
   const { func, strWithoutFunc } = extractFunction(currentLine, 'onClick')
