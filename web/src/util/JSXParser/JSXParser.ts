@@ -37,6 +37,8 @@ export const JSXstrToHTML = ($parent: HTMLElement, JSXstr: string, selector) => 
   return JSXobjToHTML($parent, JSXobj)
 }
 
+export const isSelfClosingTag = (str: string): boolean => str.indexOf('/>') !== -1
+export const extractSelfClosingTagType = (str: string): string => str.trim().replace('/>', '').split(' ')[0]
 export const isClosingTag = (str: string): boolean => str?.[0] === '/'
 export const removeQuotes = (str: string): string => str?.replace(/"/g, '').replace(/'/g, '')
 //remove tab, newline, form feed > replace multiple space to one
@@ -67,11 +69,21 @@ export const extractFunction = (srcStr: string, funcName: string): ExtractedFunc
   }
 }
 
+// Construct abstract syntax tree(AST)
 export const JSXstrToJSXobj = (htmlStrArr: string[], checkIndex = 0): JsxObjWrapperType => {
   const newJSXobj: JsxObjType = { type: '', children: [], props: {} }
   const currentLine = htmlStrArr[checkIndex]
   let newJSXobjWrapper
-  if (isClosingTag(currentLine)) {
+  if (isSelfClosingTag(currentLine)) {
+    return {
+      nextCheckIndex: checkIndex + 1,
+      JSXobj: {
+        type: extractSelfClosingTagType(currentLine),
+        children: [],
+        props: {},
+      },
+    }
+  } else if (isClosingTag(currentLine)) {
     return {
       nextCheckIndex: checkIndex + 1,
       JSXobj: null,
@@ -89,6 +101,7 @@ export const JSXstrToJSXobj = (htmlStrArr: string[], checkIndex = 0): JsxObjWrap
       else break
     }
   }
+  console.log(currentLine)
 
   // Handling onClick to change to a function
   const { func, strWithoutFunc } = extractFunction(currentLine, 'onClick')

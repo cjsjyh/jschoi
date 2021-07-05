@@ -88,7 +88,12 @@ const JSXstrings = [
     },
   },
   {
-    arg: `<div><p>line1</p><br><p></p></div>`,
+    arg: `
+      <div>
+        <p>line1</p><br/>
+        <p></p>
+      </div>
+    `,
     result: {
       type: 'div',
       props: {},
@@ -107,7 +112,6 @@ const JSXstrings = [
         {
           type: 'p',
           props: {},
-          innerHTML: 'line1',
           children: [],
         },
       ],
