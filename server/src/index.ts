@@ -3,6 +3,7 @@ require('dotenv').config()
 import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
+import 'reflect-metadata'
 
 import apiRouter from './api'
 
