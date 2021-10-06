@@ -1,6 +1,6 @@
 import Router from 'koa-router'
 
-import blogRouter from './blog'
+import blogRouter from './blog/post'
 
 const router = new Router()
 

@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-import Koa, { DefaultState } from 'koa'
+import Koa from 'koa'
 import bodyParser from 'koa-bodyparser'
 import Router from 'koa-router'
 
@@ -10,7 +10,7 @@ import { createConnection } from 'typeorm'
 import apiRouter from './api'
 
 createConnection()
-  .then(async (connection) => {
+  .then(() => {
     const app = new Koa()
     const port = 3000
 
