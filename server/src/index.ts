@@ -9,11 +9,14 @@ import { createConnection } from 'typeorm'
 
 import apiRouter from './api'
 
+const cors = require('@koa/cors')
+
 createConnection()
   .then(() => {
     const app = new Koa()
     const port = 8000
 
+    app.use(cors({ origin: '*' }))
     app.use(bodyParser())
 
     const router = new Router()
