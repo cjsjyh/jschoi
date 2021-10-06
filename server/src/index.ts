@@ -12,7 +12,7 @@ import apiRouter from './api'
 createConnection()
   .then(() => {
     const app = new Koa()
-    const port = 3000
+    const port = 8000
 
     app.use(bodyParser())
 

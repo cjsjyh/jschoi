@@ -1,5 +1,5 @@
-import { route as PostRoute } from './Post/route'
+import { routes as BlogRoutes } from './Blog/routes'
 import { route as NotFoundRoute } from './NotFound/route'
 import { RouteType } from '../types'
 
-export const routes: RouteType[] = [PostRoute, NotFoundRoute]
+export const routes: RouteType[] = [...BlogRoutes, NotFoundRoute]
